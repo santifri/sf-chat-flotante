@@ -1,13 +1,13 @@
 <?php
 
 /*
- * Plugin Name: WhatsApp Chat para WordPress
+ * Plugin Name: SF Chat Flotante
  * Plugin URI: https://santifrias.com
  * Description: Botón flotante de WhatsApp con múltiples cuentas, horarios configurables y personalización avanzada
- * Version: 1.0.3
+ * Version: 1.0.5
  * Author: Santi Frías
  * Author URI: https://santifrias.com
- * Text Domain: sf-whatsapp-chat-wordpress
+ * Text Domain: sf-chat-flotante
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.2
@@ -30,8 +30,8 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-// Definir constantes del plugin
-define( 'WHATSAPP_FLOTANTE_VERSION', '1.0.1' );
+// Definición de constantes
+define( 'WHATSAPP_FLOTANTE_VERSION', '1.0.5' );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -45,8 +45,8 @@ function whatsapp_flotante_check_version() {
     if ( version_compare( $wp_version, '5.0', '<' ) ) {
         deactivate_plugins( WHATSAPP_FLOTANTE_PLUGIN_BASENAME );
         wp_die(
-            __( 'Este plugin requiere WordPress 5.0 o superior.', 'whatsapp-flotante' ),
-            __( 'Error de activación del plugin', 'whatsapp-flotante' ),
+            esc_html__( 'Este plugin requiere WordPress 5.0 o superior.', 'sf-chat-flotante' ),
+            esc_html__( 'Error de activación del plugin', 'sf-chat-flotante' ),
             array( 'back_link' => true )
         );
     }
@@ -61,8 +61,8 @@ require_once WHATSAPP_FLOTANTE_PLUGIN_DIR . 'includes/class-whatsapp-flotante.ph
 /**
  * Iniciar el plugin
  */
-function run_whatsapp_flotante() {
+function sf_chat_flotante_run() {
     $plugin = new WhatsApp_Flotante();
     $plugin->run();
 }
-run_whatsapp_flotante();
+sf_chat_flotante_run();
