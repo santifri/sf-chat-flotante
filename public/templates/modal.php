@@ -2,7 +2,7 @@
 /**
  * Template del modal de WhatsApp
  *
- * @package WhatsApp_Flotante
+ * @package sf-chat-flotante
  * @since 1.0.0
  */
 
@@ -10,14 +10,16 @@
 if (!defined('WPINC')) {
     die;
 }
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 ?>
 
 <div id="whatsapp-flotante-modal" class="wf-modal" style="display: none;">
     <div class="wf-modal-overlay"></div>
     <div class="wf-modal-content">
         <div class="wf-modal-header">
-            <h3><?php _e('Contacta con nosotros', 'whatsapp-flotante'); ?></h3>
-            <button type="button" class="wf-modal-close" aria-label="<?php _e('Cerrar', 'whatsapp-flotante'); ?>">
+            <h3><?php echo esc_html($modal_title); ?></h3>
+            <button type="button" class="wf-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'sf-chat-flotante'); ?>">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -27,7 +29,7 @@ if (!defined('WPINC')) {
 
         <div class="wf-modal-body">
             <p class="wf-modal-subtitle">
-                <?php _e('Selecciona un contacto para iniciar la conversación:', 'whatsapp-flotante'); ?>
+                <?php echo esc_html($modal_subtitle); ?>
             </p>
 
             <div id="wf-accounts-list" class="wf-accounts-list">
@@ -45,7 +47,7 @@ if (!defined('WPINC')) {
                         <div class="wf-account-info">
                             <span class="wf-account-label"><?php echo esc_html($account['label']); ?></span>
                             <span
-                                class="wf-account-status"><?php echo esc_html(!empty($account['status_message']) ? $account['status_message'] : __('Disponible ahora', 'whatsapp-flotante')); ?></span>
+                                class="wf-account-status"><?php echo esc_html(!empty($account['status_message']) ? $account['status_message'] : esc_html__('Disponible ahora', 'sf-chat-flotante')); ?></span>
                         </div>
                         <div class="wf-account-arrow">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
