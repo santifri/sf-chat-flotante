@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.6] - 2026-08-06
+- **Corregido**: el plugin no arrancaba. La clase principal había perdido su
+  constructor y el método que carga e instancia el resto de clases, así que ni
+  se mostraba la página de ajustes ni el botón en el frontend. No daba ningún
+  error de PHP, simplemente no hacía nada.
+- Corregido el text domain, que apuntaba a `whatsapp-flotante` en vez de
+  `sf-chat-flotante`, impidiendo cargar las traducciones.
+- Renombrado `languages/whatsapp-flotante.pot` a `sf-chat-flotante.pot` para
+  que case con el text domain.
+- Recuperados `.gitattributes`, `.gitignore` y el workflow de release, y
+  actualizado en este el slug del ZIP.
+- Normalizados a LF los finales de línea de los ficheros CSS y JS.
+
 ## [1.0.5] - 2026-07-11
 - Renombrado del plugin a **SF Chat Flotante** (`sf-chat-flotante.php`, text domain `sf-chat-flotante`).
 - Título y subtítulo del modal personalizables desde ajustes.

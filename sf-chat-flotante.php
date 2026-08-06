@@ -4,7 +4,7 @@
  * Plugin Name: SF Chat Flotante
  * Plugin URI: https://santifrias.com
  * Description: Botón flotante de WhatsApp con múltiples cuentas, horarios configurables y personalización avanzada
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Santi Frías
  * Author URI: https://santifrias.com
  * Text Domain: sf-chat-flotante
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Definición de constantes
-define( 'WHATSAPP_FLOTANTE_VERSION', '1.0.5' );
+define( 'WHATSAPP_FLOTANTE_VERSION', '1.0.6' );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

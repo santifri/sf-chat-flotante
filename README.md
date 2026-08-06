@@ -4,7 +4,7 @@ Contributors: santifrias
 Tags: chat, floating button, multiple accounts, contact
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -46,6 +46,16 @@ Navigate to Settings > Chat Flotante. Click on "Select image" and choose an imag
 Inside each account setting, click "Add schedule". Select the days of the week and define the start and end times. You can add multiple time ranges. If no schedules are added, the account will be available 24/7.
 
 ## Changelog
+
+### 1.0.6
+* Fixed: the plugin did not start up. The main class had lost its constructor
+  and the method that loads and instantiates the other classes, so neither the
+  settings page nor the floating button appeared. It raised no PHP error, it
+  simply did nothing.
+* Fixed the text domain, which pointed to `whatsapp-flotante` instead of
+  `sf-chat-flotante`, preventing translations from loading.
+* Renamed `languages/whatsapp-flotante.pot` to `sf-chat-flotante.pot`.
+* Restored the release workflow and normalized CSS/JS line endings.
 
 ### 1.0.5
 * Updated to meet WordPress Coding Standards.
