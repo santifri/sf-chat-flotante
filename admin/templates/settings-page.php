@@ -324,6 +324,13 @@ if ( ! defined( 'WPINC' ) ) {
                     class="large-text"><?php echo esc_textarea( $disclaimer ); ?></textarea>
                 <p class="description"><?php esc_html_e( 'Texto opcional que se mostrará en el modal de WhatsApp (por ejemplo, información sobre protección de datos).', 'sf-whatsapp-chat-wordpress' ); ?></p>
             </div>
+
+            <div class="wf-field">
+                <label for="holidays"><?php esc_html_e( 'Días de cierre', 'sf-whatsapp-chat-wordpress' ); ?></label>
+                <textarea name="holidays" id="holidays" rows="5" class="large-text"
+                    placeholder="2026-12-25"><?php echo esc_textarea( $holidays ); ?></textarea>
+                <p class="description"><?php esc_html_e( 'Una fecha por línea, en formato AAAA-MM-DD. Esos días ninguna cuenta estará disponible, aunque tenga horario configurado.', 'sf-whatsapp-chat-wordpress' ); ?></p>
+            </div>
         </div>
 
         <?php submit_button( esc_html__( 'Guardar configuración', 'sf-whatsapp-chat-wordpress' ) ); ?>

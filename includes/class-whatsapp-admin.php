@@ -111,6 +111,7 @@ class WhatsApp_Admin
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ACCOUNTS, array('sanitize_callback' => array($this->settings, 'sanitize_accounts')));
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_CUSTOM_ICON, array('sanitize_callback' => 'absint'));
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_DISCLAIMER, array('sanitize_callback' => 'wp_kses_post'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_HOLIDAYS, array('sanitize_callback' => array($this->settings, 'sanitize_holidays')));
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ICON_POSITION, array('sanitize_callback' => 'sanitize_text_field'));
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM, array('sanitize_callback' => 'absint'));
         register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE, array('sanitize_callback' => 'absint'));
@@ -203,6 +204,7 @@ class WhatsApp_Admin
         $custom_icon_id = $this->settings->get_custom_icon();
         $custom_icon_url = $custom_icon_id ? wp_get_attachment_image_url($custom_icon_id, 'thumbnail') : '';
         $disclaimer = $this->settings->get_disclaimer();
+        $holidays = $this->settings->get_holidays_setting();
         $modal_title = $this->settings->get_modal_title();
         $modal_subtitle = $this->settings->get_modal_subtitle();
         $icon_position = $this->settings->get_icon_position();
@@ -262,6 +264,10 @@ class WhatsApp_Admin
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $disclaimer = isset($_POST['disclaimer']) ? wp_unslash($_POST['disclaimer']) : '';
         $this->settings->save_disclaimer($disclaimer);
+
+        // Guardar dias de cierre
+        $holidays = isset($_POST['holidays']) ? wp_unslash($_POST['holidays']) : '';
+        $this->settings->save_holidays($holidays);
 
         // Guardar título del modal
         $modal_title = isset($_POST['modal_title']) ? sanitize_text_field(wp_unslash($_POST['modal_title'])) : '';
