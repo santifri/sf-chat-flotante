@@ -90,6 +90,12 @@ class WhatsApp_Settings
     const OPTION_HOLIDAYS = 'whatsapp_flotante_holidays';
 
     /**
+     * Si esta activo, el horario se decide en el navegador y no en el servidor.
+     * Necesario para que el plugin funcione con cache de pagina.
+     */
+    const OPTION_CLIENT_SIDE = 'whatsapp_flotante_client_side';
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -689,6 +695,79 @@ class WhatsApp_Settings
      *
      * @return string Texto con una fecha por linea.
      */
+    /**
+     * Saber si el horario se decide en el navegador.
+     *
+     * @return bool
+     */
+    public function is_client_side()
+    {
+        return (bool) get_option(self::OPTION_CLIENT_SIDE, false);
+    }
+
+    /**
+     * Guardar el modo de decision del horario.
+     *
+     * @param mixed $value Valor del formulario.
+     */
+    public function save_client_side($value)
+    {
+        return update_option(self::OPTION_CLIENT_SIDE, $value ? 1 : 0);
+    }
+
+    /**
+     * Cuentas marcadas como activas, sin mirar el horario.
+     *
+     * Es lo que se imprime en modo navegador: van todas y el script decide
+     * cuales se ven.
+     *
+     * @return array
+     */
+    public function get_active_accounts()
+    {
+        $active = array();
+
+        foreach ($this->get_accounts() as $account) {
+            if (!empty($account['active'])) {
+                $active[] = $account;
+            }
+        }
+
+        return $active;
+    }
+
+    /**
+     * Horarios de una cuenta en formato compacto para los atributos de datos.
+     *
+     * d = dias (0 domingo .. 6 sabado), i = inicio, f = fin.
+     * El fin NO se incluye, igual que en is_account_available().
+     *
+     * @param array $account Cuenta.
+     * @return array
+     */
+    public function get_schedule_payload($account)
+    {
+        $payload = array();
+
+        if (empty($account['schedules']) || !is_array($account['schedules'])) {
+            return $payload;
+        }
+
+        foreach ($account['schedules'] as $schedule) {
+            if (empty($schedule['days']) || !isset($schedule['start_time'], $schedule['end_time'])) {
+                continue;
+            }
+
+            $payload[] = array(
+                'd' => array_values(array_map('intval', (array) $schedule['days'])),
+                'i' => (string) $schedule['start_time'],
+                'f' => (string) $schedule['end_time'],
+            );
+        }
+
+        return $payload;
+    }
+
     public function get_holidays_setting()
     {
         return (string) get_option(self::OPTION_HOLIDAYS, '');

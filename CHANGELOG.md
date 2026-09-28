@@ -1,15 +1,41 @@
 # Changelog
 
-## [Sin publicar] — 1.1.0
+## [1.1.0] - 2026-09-28
 
-- Revertido el nombre de fichero y carpeta a `sf-whatsapp-chat-wordpress`, que es
-  el que tienen las instalaciones en producción. El renombrado a
-  `sf-chat-flotante` de la 1.0.5 convertía cada actualización en una
-  desinstalación y reinstalación manual. El nombre visible sigue siendo
-  **SF Chat Flotante**.
-- Text domain alineado con el slug: `sf-whatsapp-chat-wordpress`. Estaba
-  desajustado desde la 1.0.1, donde la cabecera declaraba un dominio y el código
-  pedía otro.
+### Modo compatible con caché
+
+- Opción nueva **«Decidir el horario en el navegador (compatible con caché)»**,
+  **desactivada por defecto**. Con ella apagada el comportamiento es idéntico al
+  de la 1.0.6, comprobado comparando el HTML generado byte a byte.
+- Con la opción activada, el botón se imprime siempre y oculto, cada cuenta lleva
+  sus horarios en `data-wf-horarios`, y un script decide qué se ve. La hora se
+  calcula en la zona del sitio con `Intl`, nunca con la del visitante.
+- Evento `whatsappFlotante:estado` en `document` y variable global
+  `window.whatsappFlotanteEstado`, con `{ abierto, cuentas, modo }`. Se publican
+  en los dos modos.
+
+### Correcciones
+
+- La hora de cierre ya no cuenta como disponible: un horario que termina a las
+  20:00 deja de mostrarse a las 20:00:00, no a las 20:00:59.
+- Deshecho el doble espaciado de `class-whatsapp-frontend.php`, que se colaba en
+  el HTML generado.
+
+### Novedades
+
+- **Días de cierre**: lista de fechas `AAAA-MM-DD` en los ajustes. Esos días
+  ninguna cuenta está disponible, en los dos modos.
+- **Puntos de extensión** para adaptar el plugin desde el código de cada web sin
+  tocarlo: filtros `whatsapp_flotante_is_open`, `whatsapp_flotante_holidays` y
+  `whatsapp_flotante_available_accounts`.
+
+### Cambios de nombre
+
+- Vuelta al slug `sf-whatsapp-chat-wordpress`, que es el que tienen las
+  instalaciones: permite actualizar en sitio en vez de reinstalar a mano. El
+  nombre visible sigue siendo **SF Chat Flotante**.
+- Text domain alineado con el slug. Estaba descuadrado desde la 1.0.1.
+
 
 ## [1.0.6] - 2026-08-06
 - **Corregido**: el plugin no arrancaba. La clase principal había perdido su

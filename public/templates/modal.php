@@ -34,10 +34,10 @@ if (!defined('WPINC')) {
 
             <div id="wf-accounts-list" class="wf-accounts-list">
                 <?php foreach ($available_accounts as $account): ?>
-                    <a href="#" class="wf-account-item" 
+                    <a href="#" class="wf-account-item<?php echo !empty($client_side) ? ' wf-oculto' : ''; ?>" 
                         data-account-id="<?php echo esc_attr(isset($account['id']) ? $account['id'] : ''); ?>"
                         data-phone="<?php echo esc_attr($account['phone']); ?>"
-                        data-message="<?php echo esc_attr(isset($account['message']) ? $account['message'] : ''); ?>">
+                        data-message="<?php echo esc_attr(isset($account['message']) ? $account['message'] : ''); ?>"<?php if (!empty($client_side)): ?> data-wf-horarios="<?php echo esc_attr(wp_json_encode(isset($account['wf_horarios']) ? $account['wf_horarios'] : array())); ?>"<?php endif; ?>>
                         <div class="wf-account-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                 <path

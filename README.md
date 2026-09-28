@@ -4,7 +4,7 @@ Contributors: santifrias
 Tags: chat, floating button, multiple accounts, contact
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.0.6
+Stable tag: 1.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +44,51 @@ Navigate to Settings > Chat Flotante. Click on "Select image" and choose an imag
 
 ### How do I configure account schedules?
 Inside each account setting, click "Add schedule". Select the days of the week and define the start and end times. You can add multiple time ranges. If no schedules are added, the account will be available 24/7.
+
+## Extending the plugin
+
+Everything site-specific should live in your own code, never in a modified copy
+of this plugin: the same version is meant to run on every site.
+
+### PHP filters
+
+```php
+add_filter( 'whatsapp_flotante_is_open', function ( $open, $account ) {
+    return $open;  // final say on whether this account is within hours
+}, 10, 2 );
+
+add_filter( 'whatsapp_flotante_holidays', function ( $dates ) {
+    $dates[] = '2026-12-25';  // closing days on top of the ones in settings
+    return $dates;
+} );
+
+add_filter( 'whatsapp_flotante_available_accounts', function ( $available ) {
+    return $available;
+} );
+```
+
+### JavaScript event
+
+Published in both modes, whether it opens or closes. Check the global first: if
+your code runs after the event fired, you would miss it.
+
+```js
+function whenKnown( cb ) {
+    if ( window.whatsappFlotanteEstado ) {
+        cb( window.whatsappFlotanteEstado );
+        return;
+    }
+    document.addEventListener( 'whatsappFlotante:estado', function ( e ) {
+        cb( e.detail );
+    }, { once: true } );
+}
+
+// detail: { abierto: boolean, cuentas: number, modo: "cliente"|"servidor" }
+```
+
+Note that in server mode the state is calculated when the page is generated, so
+a cached page will report a stale value. Turn on the browser-side option for the
+event to be reliable behind a page cache.
 
 ## Changelog
 

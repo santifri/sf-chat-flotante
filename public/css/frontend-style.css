@@ -312,3 +312,7 @@
     outline: 2px solid #25D366;
     outline-offset: 2px;
 }
+/* Lo ocultan el script de horario y el render en modo navegador. */
+.wf-oculto {
+    display: none !important;
+}

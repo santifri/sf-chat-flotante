@@ -43,8 +43,17 @@ class WhatsApp_Frontend
      */
     public function enqueue_frontend_assets()
     {
-        // Solo cargar si hay cuentas disponibles
-        $available_accounts = $this->settings->get_available_accounts();
+        $client_side = $this->settings->is_client_side();
+        $available   = $this->settings->get_available_accounts();
+
+        // El script de horario se encola SIEMPRE, incluso sin ninguna cuenta
+        // disponible: el evento whatsappFlotante:estado tiene que existir en
+        // todas las paginas para que otros widgets puedan reaccionar al cierre.
+        $this->enqueue_schedule_script($client_side, $available);
+
+        // En modo navegador se imprimen todas las cuentas activas y decide el
+        // script; en modo servidor, solo las disponibles ahora mismo.
+        $available_accounts = $client_side ? $this->settings->get_active_accounts() : $available;
 
         if (empty($available_accounts)) {
             return;
@@ -113,13 +122,62 @@ class WhatsApp_Frontend
     /**
      * Renderizar el botón flotante y el modal
      */
+    /**
+     * Encolar el script que publica el estado del horario.
+     *
+     * @param bool  $client_side Si la decision se toma en el navegador.
+     * @param array $available   Cuentas disponibles segun el servidor.
+     */
+    private function enqueue_schedule_script($client_side, $available)
+    {
+        wp_enqueue_script(
+            'whatsapp-flotante-horario',
+            WHATSAPP_FLOTANTE_PLUGIN_URL . 'public/js/horario.js',
+            array(),
+            WHATSAPP_FLOTANTE_VERSION,
+            true
+        );
+
+        $timezone = wp_timezone();
+        $now      = new DateTime('now', $timezone);
+
+        $data = array(
+            'modo'     => $client_side ? 'cliente' : 'servidor',
+            'zona'     => $timezone->getName(),
+            // Respaldo para navegadores sin zonas horarias con nombre.
+            'desfase'  => $now->getOffset(),
+            'festivos' => array_values($this->settings->get_holidays()),
+            'abierto'  => !empty($available),
+            'cuentas'  => count($available),
+        );
+
+        // wp_add_inline_script en vez de wp_localize_script: este ultimo
+        // convierte los escalares a cadena y el script necesita booleanos.
+        wp_add_inline_script(
+            'whatsapp-flotante-horario',
+            'window.whatsappFlotanteHorario = ' . wp_json_encode($data) . ';',
+            'before'
+        );
+    }
+
     public function render_floating_button()
     {
-        // Solo renderizar si hay cuentas disponibles
-        $available_accounts = $this->settings->get_available_accounts();
+        $client_side = $this->settings->is_client_side();
+
+        $available_accounts = $client_side
+            ? $this->settings->get_active_accounts()
+            : $this->settings->get_available_accounts();
 
         if (empty($available_accounts)) {
             return;
+        }
+
+        // En modo navegador cada cuenta viaja con sus horarios y el script
+        // decide cual se ensena. Nacen ocultas para que no parpadeen.
+        if ($client_side) {
+            foreach ($available_accounts as $i => $account) {
+                $available_accounts[$i]['wf_horarios'] = $this->settings->get_schedule_payload($account);
+            }
         }
 
         // Obtener URL del icono

@@ -326,6 +326,14 @@ if ( ! defined( 'WPINC' ) ) {
             </div>
 
             <div class="wf-field">
+                <label>
+                    <input type="checkbox" name="client_side" value="1" <?php checked( $client_side ); ?>>
+                    <?php esc_html_e( 'Decidir el horario en el navegador (compatible con caché)', 'sf-whatsapp-chat-wordpress' ); ?>
+                </label>
+                <p class="description"><?php esc_html_e( 'Actívalo si la web usa caché de página. Sin esto, el horario se calcula al generar la página y queda congelado en la copia guardada, de modo que el botón puede aparecer fuera de horario o faltar dentro de él.', 'sf-whatsapp-chat-wordpress' ); ?></p>
+            </div>
+
+            <div class="wf-field">
                 <label for="holidays"><?php esc_html_e( 'Días de cierre', 'sf-whatsapp-chat-wordpress' ); ?></label>
                 <textarea name="holidays" id="holidays" rows="5" class="large-text"
                     placeholder="2026-12-25"><?php echo esc_textarea( $holidays ); ?></textarea>
