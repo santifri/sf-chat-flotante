@@ -1,5 +1,16 @@
 # Changelog
 
+## [Sin publicar] — 1.1.0
+
+- Revertido el nombre de fichero y carpeta a `sf-whatsapp-chat-wordpress`, que es
+  el que tienen las instalaciones en producción. El renombrado a
+  `sf-chat-flotante` de la 1.0.5 convertía cada actualización en una
+  desinstalación y reinstalación manual. El nombre visible sigue siendo
+  **SF Chat Flotante**.
+- Text domain alineado con el slug: `sf-whatsapp-chat-wordpress`. Estaba
+  desajustado desde la 1.0.1, donde la cabecera declaraba un dominio y el código
+  pedía otro.
+
 ## [1.0.6] - 2026-08-06
 - **Corregido**: el plugin no arrancaba. La clase principal había perdido su
   constructor y el método que carga e instancia el resto de clases, así que ni

@@ -327,7 +327,7 @@ class WhatsApp_Settings
      */
     public function get_modal_title()
     {
-        return get_option(self::OPTION_MODAL_TITLE, esc_html__('Contacta con nosotros', 'sf-chat-flotante'));
+        return get_option(self::OPTION_MODAL_TITLE, esc_html__('Contacta con nosotros', 'sf-whatsapp-chat-wordpress'));
     }
 
     /**
@@ -349,7 +349,7 @@ class WhatsApp_Settings
      */
     public function get_modal_subtitle()
     {
-        return get_option(self::OPTION_MODAL_SUBTITLE, esc_html__('Selecciona un contacto para iniciar la conversación:', 'sf-chat-flotante'));
+        return get_option(self::OPTION_MODAL_SUBTITLE, esc_html__('Selecciona un contacto para iniciar la conversación:', 'sf-whatsapp-chat-wordpress'));
     }
 
     /**

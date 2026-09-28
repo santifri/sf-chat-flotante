@@ -16,7 +16,7 @@ jobs:
 
       - name: Build ZIP
         run: |
-          PLUGIN_SLUG="sf-chat-flotante"
+          PLUGIN_SLUG="sf-whatsapp-chat-wordpress"
           ZIP_NAME="${PLUGIN_SLUG}.zip"
 
           mkdir -p "$PLUGIN_SLUG"
@@ -34,4 +34,4 @@ jobs:
       - name: Upload ZIP to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: sf-chat-flotante.zip
+          files: sf-whatsapp-chat-wordpress.zip

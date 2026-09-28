@@ -7,7 +7,7 @@
  * Version: 1.0.6
  * Author: Santi Frías
  * Author URI: https://santifrias.com
- * Text Domain: sf-chat-flotante
+ * Text Domain: sf-whatsapp-chat-wordpress
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.2
@@ -45,8 +45,8 @@ function whatsapp_flotante_check_version() {
     if ( version_compare( $wp_version, '5.0', '<' ) ) {
         deactivate_plugins( WHATSAPP_FLOTANTE_PLUGIN_BASENAME );
         wp_die(
-            esc_html__( 'Este plugin requiere WordPress 5.0 o superior.', 'sf-chat-flotante' ),
-            esc_html__( 'Error de activación del plugin', 'sf-chat-flotante' ),
+            esc_html__( 'Este plugin requiere WordPress 5.0 o superior.', 'sf-whatsapp-chat-wordpress' ),
+            esc_html__( 'Error de activación del plugin', 'sf-whatsapp-chat-wordpress' ),
             array( 'back_link' => true )
         );
     }

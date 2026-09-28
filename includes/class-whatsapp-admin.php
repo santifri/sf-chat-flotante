@@ -95,8 +95,8 @@ class WhatsApp_Admin
     public function add_admin_menu()
     {
         add_options_page(
-            esc_html__('WhatsApp Flotante', 'sf-chat-flotante'),
-            esc_html__('WhatsApp Flotante', 'sf-chat-flotante'),
+            esc_html__('WhatsApp Flotante', 'sf-whatsapp-chat-wordpress'),
+            esc_html__('WhatsApp Flotante', 'sf-whatsapp-chat-wordpress'),
             'manage_options',
             'whatsapp-flotante',
             array($this, 'render_settings_page')
@@ -171,18 +171,18 @@ class WhatsApp_Admin
             'whatsapp-flotante-admin',
             'whatsappFlotanteAdmin',
             array(
-                'confirmDelete' => esc_html__('¿Estás seguro de que quieres eliminar esta cuenta?', 'sf-chat-flotante'),
-                'confirmDeleteSchedule' => esc_html__('¿Estás seguro de que quieres eliminar este horario?', 'sf-chat-flotante'),
-                'mediaTitle' => esc_html__('Seleccionar icono de WhatsApp', 'sf-chat-flotante'),
-                'mediaButton' => esc_html__('Usar esta imagen', 'sf-chat-flotante'),
+                'confirmDelete' => esc_html__('¿Estás seguro de que quieres eliminar esta cuenta?', 'sf-whatsapp-chat-wordpress'),
+                'confirmDeleteSchedule' => esc_html__('¿Estás seguro de que quieres eliminar este horario?', 'sf-whatsapp-chat-wordpress'),
+                'mediaTitle' => esc_html__('Seleccionar icono de WhatsApp', 'sf-whatsapp-chat-wordpress'),
+                'mediaButton' => esc_html__('Usar esta imagen', 'sf-whatsapp-chat-wordpress'),
                 'days' => array(
-                    esc_html__('D', 'sf-chat-flotante'),
-                    esc_html__('L', 'sf-chat-flotante'),
-                    esc_html__('M', 'sf-chat-flotante'),
-                    esc_html__('X', 'sf-chat-flotante'),
-                    esc_html__('J', 'sf-chat-flotante'),
-                    esc_html__('V', 'sf-chat-flotante'),
-                    esc_html__('S', 'sf-chat-flotante'),
+                    esc_html__('D', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('L', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('M', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('X', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('J', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('V', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('S', 'sf-whatsapp-chat-wordpress'),
                 ),
             )
         );
@@ -195,7 +195,7 @@ class WhatsApp_Admin
     {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No tienes permisos para acceder a esta página.', 'sf-chat-flotante'));
+            wp_die(esc_html__('No tienes permisos para acceder a esta página.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Obtener datos actuales
@@ -238,7 +238,7 @@ class WhatsApp_Admin
     {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No tienes permisos para realizar esta acción.', 'sf-chat-flotante'));
+            wp_die(esc_html__('No tienes permisos para realizar esta acción.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Verificar nonce - wp_verify_nonce handles sanitization internally
@@ -246,7 +246,7 @@ class WhatsApp_Admin
             !isset($_POST['whatsapp_flotante_nonce']) ||
             !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['whatsapp_flotante_nonce'])), 'whatsapp_flotante_save')
         ) {
-            wp_die(esc_html__('Error de seguridad. Por favor, intenta de nuevo.', 'sf-chat-flotante'));
+            wp_die(esc_html__('Error de seguridad. Por favor, intenta de nuevo.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Guardar cuentas

@@ -2,7 +2,7 @@
 /**
  * Template del modal de WhatsApp
  *
- * @package sf-chat-flotante
+ * @package WhatsApp_Flotante
  * @since 1.0.0
  */
 
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
     <div class="wf-modal-content">
         <div class="wf-modal-header">
             <h3><?php echo esc_html($modal_title); ?></h3>
-            <button type="button" class="wf-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'sf-chat-flotante'); ?>">
+            <button type="button" class="wf-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'sf-whatsapp-chat-wordpress'); ?>">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -47,7 +47,7 @@ if (!defined('WPINC')) {
                         <div class="wf-account-info">
                             <span class="wf-account-label"><?php echo esc_html($account['label']); ?></span>
                             <span
-                                class="wf-account-status"><?php echo esc_html(!empty($account['status_message']) ? $account['status_message'] : esc_html__('Disponible ahora', 'sf-chat-flotante')); ?></span>
+                                class="wf-account-status"><?php echo esc_html(!empty($account['status_message']) ? $account['status_message'] : esc_html__('Disponible ahora', 'sf-whatsapp-chat-wordpress')); ?></span>
                         </div>
                         <div class="wf-account-arrow">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

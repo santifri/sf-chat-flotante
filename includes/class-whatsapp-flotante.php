@@ -83,7 +83,7 @@ class WhatsApp_Flotante
     public function load_plugin_textdomain()
     {
         load_plugin_textdomain(
-            'sf-chat-flotante',
+            'sf-whatsapp-chat-wordpress',
             false,
             dirname(WHATSAPP_FLOTANTE_PLUGIN_BASENAME) . '/languages/'
         );
