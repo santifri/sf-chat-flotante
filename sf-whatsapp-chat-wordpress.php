@@ -36,6 +36,10 @@ define( 'WHATSAPP_FLOTANTE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WHATSAPP_FLOTANTE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
+// Repositorio del que se descargan las actualizaciones. Es publico, asi que no
+// hace falta token; si pasara a privado habria que autenticar en el updater.
+define( 'WHATSAPP_FLOTANTE_REPO', 'santifri/sf-chat-flotante' );
+
 /**
  * Verificar versión mínima de WordPress
  */

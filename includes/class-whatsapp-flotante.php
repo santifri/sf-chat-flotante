@@ -39,6 +39,13 @@ class WhatsApp_Flotante
     protected $frontend;
 
     /**
+     * Instancia del actualizador
+     *
+     * @var WhatsApp_Updater
+     */
+    protected $updater;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -63,10 +70,23 @@ class WhatsApp_Flotante
         // Cargar clase de frontend
         require_once WHATSAPP_FLOTANTE_PLUGIN_DIR . 'includes/class-whatsapp-frontend.php';
 
+        // Cargar actualizador
+        require_once WHATSAPP_FLOTANTE_PLUGIN_DIR . 'includes/class-whatsapp-updater.php';
+
         // Instanciar las clases
         $this->settings = new WhatsApp_Settings();
         $this->admin = new WhatsApp_Admin($this->settings);
         $this->frontend = new WhatsApp_Frontend($this->settings);
+
+        // El actualizador solo hace falta en el escritorio: no tiene sentido
+        // consultar GitHub en cada visita del frontend.
+        if (is_admin()) {
+            $this->updater = new WhatsApp_Updater(
+                WHATSAPP_FLOTANTE_PLUGIN_BASENAME,
+                WHATSAPP_FLOTANTE_VERSION,
+                WHATSAPP_FLOTANTE_REPO
+            );
+        }
     }
 
     /**

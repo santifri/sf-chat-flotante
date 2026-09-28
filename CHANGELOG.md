@@ -14,6 +14,16 @@
   `window.whatsappFlotanteEstado`, con `{ abierto, cuentas, modo }`. Se publican
   en los dos modos.
 
+### Actualizaciones automáticas
+
+- El plugin se actualiza desde los releases de GitHub, como cualquier otro:
+  WordPress avisa y se instala desde el escritorio. Hasta ahora había que subir
+  el ZIP a mano web por web, que es la razón de que las instalaciones llegaran a
+  acumular siete meses de retraso.
+- La consulta se cachea 12 horas, y los fallos 1 hora, para no gastar el límite
+  de la API de GitHub ni ralentizar el escritorio si no responde.
+- Solo se consulta desde el escritorio, nunca en las visitas del frontend.
+
 ### Correcciones
 
 - La hora de cierre ya no cuenta como disponible: un horario que termina a las
