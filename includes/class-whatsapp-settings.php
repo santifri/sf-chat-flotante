@@ -39,6 +39,20 @@ class WhatsApp_Settings
     const OPTION_DISCLAIMER = 'whatsapp_flotante_disclaimer';
 
     /**
+     * Nombre de la opción para el título del modal
+     *
+     * @var string
+     */
+    const OPTION_MODAL_TITLE = 'whatsapp_flotante_modal_title';
+
+    /**
+     * Nombre de la opción para el subtítulo del modal
+     *
+     * @var string
+     */
+    const OPTION_MODAL_SUBTITLE = 'whatsapp_flotante_modal_subtitle';
+
+    /**
      * Nombre de la opción para la posición del icono
      *
      * @var string
@@ -68,6 +82,18 @@ class WhatsApp_Settings
     // Breakpoints
     const OPTION_BREAKPOINT_TABLET = 'whatsapp_flotante_breakpoint_tablet'; // Desktop -> Tablet
     const OPTION_BREAKPOINT_MOBILE = 'whatsapp_flotante_breakpoint_mobile'; // Tablet -> Mobile
+
+    /**
+     * Fechas de cierre en formato YYYY-MM-DD, una por linea.
+     * Se aplican a todas las cuentas.
+     */
+    const OPTION_HOLIDAYS = 'whatsapp_flotante_holidays';
+
+    /**
+     * Si esta activo, el horario se decide en el navegador y no en el servidor.
+     * Necesario para que el plugin funcione con cache de pagina.
+     */
+    const OPTION_CLIENT_SIDE = 'whatsapp_flotante_client_side';
 
     /**
      * Constructor
@@ -304,6 +330,50 @@ class WhatsApp_Settings
     {
         $sanitized = wp_kses_post($disclaimer);
         return update_option(self::OPTION_DISCLAIMER, $sanitized);
+    }
+
+    /**
+     * Obtener el título del modal
+     *
+     * @return string Título del modal
+     */
+    public function get_modal_title()
+    {
+        return get_option(self::OPTION_MODAL_TITLE, esc_html__('Contacta con nosotros', 'sf-whatsapp-chat-wordpress'));
+    }
+
+    /**
+     * Guardar el título del modal
+     *
+     * @param string $title Título del modal
+     * @return bool True si se guardó correctamente
+     */
+    public function save_modal_title($title)
+    {
+        $sanitized = sanitize_text_field($title);
+        return update_option(self::OPTION_MODAL_TITLE, $sanitized);
+    }
+
+    /**
+     * Obtener el subtítulo del modal
+     *
+     * @return string Subtítulo del modal
+     */
+    public function get_modal_subtitle()
+    {
+        return get_option(self::OPTION_MODAL_SUBTITLE, esc_html__('Selecciona un contacto para iniciar la conversación:', 'sf-whatsapp-chat-wordpress'));
+    }
+
+    /**
+     * Guardar el subtítulo del modal
+     *
+     * @param string $subtitle Subtítulo del modal
+     * @return bool True si se guardó correctamente
+     */
+    public function save_modal_subtitle($subtitle)
+    {
+        $sanitized = sanitize_text_field($subtitle);
+        return update_option(self::OPTION_MODAL_SUBTITLE, $sanitized);
     }
 
     /**
@@ -574,8 +644,14 @@ class WhatsApp_Settings
         }
 
         // Si no hay horarios configurados, está disponible siempre
+        // Un dia de cierre anula cualquier horario, tambien el de las cuentas
+        // configuradas como disponibles siempre.
+        if ($this->is_holiday()) {
+            return apply_filters('whatsapp_flotante_is_open', false, $account);
+        }
+
         if (empty($account['schedules'])) {
-            return true;
+            return apply_filters('whatsapp_flotante_is_open', true, $account);
         }
 
         // Obtener la zona horaria de WordPress
@@ -592,14 +668,194 @@ class WhatsApp_Settings
             }
 
             // Verificar si la hora actual está en el rango
-            if ($current_time >= $schedule['start_time'] && $current_time <= $schedule['end_time']) {
-                return true;
+            // La hora de cierre NO cuenta como disponible: un horario que termina
+            // a las 20:00 deja de mostrarse a las 20:00:00. Con <= la cuenta seguia
+            // viva hasta las 20:00:59, porque $current_time es 'H:i' y pierde los
+            // segundos. El calculo del navegador usa este mismo criterio.
+            if ($current_time >= $schedule['start_time'] && $current_time < $schedule['end_time']) {
+                return apply_filters('whatsapp_flotante_is_open', true, $account);
             }
         }
 
-        return false;
+        return apply_filters('whatsapp_flotante_is_open', false, $account);
     }
 
+    /**
+     * Obtener las fechas de cierre configuradas.
+     *
+     * Pasa por el filtro whatsapp_flotante_holidays para poder inyectar
+     * festivos desde el codigo de cada web sin tocar los ajustes.
+     *
+     * @return array Fechas en formato YYYY-MM-DD.
+     */
+    /**
+     * Obtener SOLO las fechas guardadas en los ajustes, sin pasar por el filtro.
+     * Es lo que debe mostrar el formulario: lo que inyecte el codigo de una web
+     * via whatsapp_flotante_holidays no es editable desde ahi.
+     *
+     * @return string Texto con una fecha por linea.
+     */
+    /**
+     * Saber si el horario se decide en el navegador.
+     *
+     * @return bool
+     */
+    public function is_client_side()
+    {
+        return (bool) get_option(self::OPTION_CLIENT_SIDE, false);
+    }
+
+    /**
+     * Guardar el modo de decision del horario.
+     *
+     * @param mixed $value Valor del formulario.
+     */
+    public function save_client_side($value)
+    {
+        return update_option(self::OPTION_CLIENT_SIDE, $value ? 1 : 0);
+    }
+
+    /**
+     * Cuentas marcadas como activas, sin mirar el horario.
+     *
+     * Es lo que se imprime en modo navegador: van todas y el script decide
+     * cuales se ven.
+     *
+     * @return array
+     */
+    public function get_active_accounts()
+    {
+        $active = array();
+
+        foreach ($this->get_accounts() as $account) {
+            if (!empty($account['active'])) {
+                $active[] = $account;
+            }
+        }
+
+        return $active;
+    }
+
+    /**
+     * Horarios de una cuenta en formato compacto para los atributos de datos.
+     *
+     * d = dias (0 domingo .. 6 sabado), i = inicio, f = fin.
+     * El fin NO se incluye, igual que en is_account_available().
+     *
+     * @param array $account Cuenta.
+     * @return array
+     */
+    public function get_schedule_payload($account)
+    {
+        $payload = array();
+
+        if (empty($account['schedules']) || !is_array($account['schedules'])) {
+            return $payload;
+        }
+
+        foreach ($account['schedules'] as $schedule) {
+            if (empty($schedule['days']) || !isset($schedule['start_time'], $schedule['end_time'])) {
+                continue;
+            }
+
+            $payload[] = array(
+                'd' => array_values(array_map('intval', (array) $schedule['days'])),
+                'i' => (string) $schedule['start_time'],
+                'f' => (string) $schedule['end_time'],
+            );
+        }
+
+        return $payload;
+    }
+
+    public function get_holidays_setting()
+    {
+        return (string) get_option(self::OPTION_HOLIDAYS, '');
+    }
+
+    public function get_holidays()
+    {
+        $raw = get_option(self::OPTION_HOLIDAYS, '');
+        $dates = $this->parse_holidays($raw);
+
+        return apply_filters('whatsapp_flotante_holidays', $dates);
+    }
+
+    /**
+     * Guardar las fechas de cierre.
+     *
+     * @param string $value Texto con una fecha por linea.
+     */
+    public function save_holidays($value)
+    {
+        return update_option(self::OPTION_HOLIDAYS, $this->sanitize_holidays($value));
+    }
+
+    /**
+     * Dejar solo fechas YYYY-MM-DD validas y existentes en el calendario.
+     *
+     * @param string $value Texto en bruto del formulario.
+     * @return string Texto saneado, una fecha por linea.
+     */
+    public function sanitize_holidays($value)
+    {
+        return implode("
+", $this->parse_holidays($value));
+    }
+
+    /**
+     * Convertir el texto de festivos en un array de fechas validas.
+     *
+     * @param string $value Texto con una fecha por linea (o separadas por comas).
+     * @return array
+     */
+    private function parse_holidays($value)
+    {
+        if (is_array($value)) {
+            $value = implode("
+", $value);
+        }
+
+        $dates = array();
+
+        foreach (preg_split('/[
+,;]+/', (string) $value) as $line) {
+            $line = trim($line);
+
+            if ('' === $line) {
+                continue;
+            }
+
+            // Descartar lo que no sea una fecha real: 2026-02-30 no vale.
+            $date = DateTime::createFromFormat('Y-m-d', $line);
+
+            if (!$date || $date->format('Y-m-d') !== $line) {
+                continue;
+            }
+
+            $dates[$line] = $line;
+        }
+
+        sort($dates);
+
+        return $dates;
+    }
+
+    /**
+     * Comprobar si una fecha es dia de cierre.
+     *
+     * @param string|null $date Fecha YYYY-MM-DD; por defecto, hoy en la zona del sitio.
+     * @return bool
+     */
+    public function is_holiday($date = null)
+    {
+        if (null === $date) {
+            $now  = new DateTime('now', wp_timezone());
+            $date = $now->format('Y-m-d');
+        }
+
+        return in_array($date, $this->get_holidays(), true);
+    }
     /**
      * Obtener solo las cuentas disponibles en el momento actual
      *
@@ -616,7 +872,7 @@ class WhatsApp_Settings
             }
         }
 
-        return $available;
+        return apply_filters('whatsapp_flotante_available_accounts', $available);
     }
 
     /**

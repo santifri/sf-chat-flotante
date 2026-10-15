@@ -1,160 +1,117 @@
-# WhatsApp Flotante - Plugin de WordPress
+# SF Chat Flotante
 
-Plugin profesional de WordPress que añade un botón flotante de WhatsApp con múltiples cuentas, horarios configurables y personalización avanzada.
+Contributors: santifrias
+Tags: chat, floating button, multiple accounts, contact
+Requires at least: 5.0
+Tested up to: 6.9
+Stable tag: 1.1.0
+Requires PHP: 7.2
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-## Descargar e instalar (WordPress)
-- Descarga el ZIP: https://github.com/santifri/whatsapp-chat-wordpress/releases/latest
-- En WordPress: Plugins → Añadir nuevo → Subir plugin → Instalar → Activar
+A professional WordPress plugin that adds a floating chat button with multiple accounts, configurable schedules, and advanced customization.
 
+## Description
 
-## Características
+This plugin allows you to create a customized floating chat button on your WordPress site. It supports adding multiple contact accounts (e.g., Sales, Support), each with their own customizable schedules and availability times. 
 
-### ✨ Funcionalidades principales
+### ✨ Main Features
+- **Multiple Accounts**: Configure as many contact accounts as you need.
+- **Advanced Scheduling**: Define multiple time ranges per account automatically synced to your WordPress timezone.
+- **Customizable Icon**: Upload your own image from the media library.
+- **Intuitive Admin Panel**: Modern and user-friendly interface.
+- **Responsive Design**: Works perfectly on mobile devices and tablets.
+- **Internationalization**: Ready to be translated into any language.
 
-- **Múltiples cuentas de WhatsApp**: Configura tantas cuentas como necesites
-- **Sistema de horarios avanzado**: Define múltiples rangos horarios por cuenta
-- **Icono personalizable**: Sube tu propia imagen desde la biblioteca de medios
-- **Panel de administración intuitivo**: Interfaz moderna y fácil de usar
-- **Diseño responsive**: Funciona perfectamente en móviles y tablets
-- **Internacionalización**: Listo para traducir a cualquier idioma
+### 📋 Account Management
+Each account can have:
+- Descriptive label
+- Phone number
+- Default predefined message (optional)
+- Active/inactive status toggle
+- Multiple schedule ranges
 
-### 📋 Gestión de cuentas
+## Installation
 
-Cada cuenta puede tener:
-- Etiqueta descriptiva
-- Número de teléfono
-- Mensaje predeterminado (opcional)
-- Estado activo/inactivo con toggle switch
-- Múltiples rangos horarios
+1. Upload the plugin folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Go to 'Settings > Chat Flotante' to configure the plugin.
 
-### ⏰ Sistema de horarios
+## Frequently Asked Questions
 
-- Selección de días de la semana (L, M, X, J, V, S, D)
-- Hora de inicio y fin para cada rango
-- Múltiples rangos por cuenta
-- Si no se configuran horarios, la cuenta está disponible siempre
-- Validación automática según la zona horaria de WordPress
+### How do I customize the button icon?
+Navigate to Settings > Chat Flotante. Click on "Select image" and choose an image from your media library or upload a new one.
 
-### 🎨 Personalización
+### How do I configure account schedules?
+Inside each account setting, click "Add schedule". Select the days of the week and define the start and end times. You can add multiple time ranges. If no schedules are added, the account will be available 24/7.
 
-- Selector de imagen desde la biblioteca de medios de WordPress
-- Preview de la imagen seleccionada
-- Opción de eliminar y volver al icono por defecto
-- Campo para texto de disclaimer/aviso legal
+## Extending the plugin
 
-## Instalación
+Everything site-specific should live in your own code, never in a modified copy
+of this plugin: the same version is meant to run on every site.
 
-1. Sube la carpeta `Whatsapp` a `/wp-content/plugins/`
-2. Activa el plugin desde el menú 'Plugins' en WordPress
-3. Ve a 'Ajustes > WhatsApp Flotante' para configurar
+### PHP filters
 
-## Configuración
+```php
+add_filter( 'whatsapp_flotante_is_open', function ( $open, $account ) {
+    return $open;  // final say on whether this account is within hours
+}, 10, 2 );
 
-### Icono del botón flotante
+add_filter( 'whatsapp_flotante_holidays', function ( $dates ) {
+    $dates[] = '2026-12-25';  // closing days on top of the ones in settings
+    return $dates;
+} );
 
-1. Haz clic en "Seleccionar imagen"
-2. Elige una imagen de tu biblioteca de medios o sube una nueva
-3. La imagen se mostrará como preview
-4. Puedes eliminarla en cualquier momento para volver al icono por defecto
-
-### Añadir cuentas
-
-1. Haz clic en "Añadir cuenta"
-2. Rellena los campos:
-   - **Etiqueta**: Nombre descriptivo (ej: "Ventas", "Soporte")
-   - **Teléfono**: Número con código de país (ej: +34612345678)
-   - **Mensaje**: Texto predeterminado (opcional)
-3. Activa/desactiva la cuenta con el toggle switch
-
-### Configurar horarios
-
-1. Dentro de cada cuenta, haz clic en "Añadir horario"
-2. Selecciona los días de la semana
-3. Define la hora de inicio y fin
-4. Puedes añadir múltiples rangos horarios
-5. Si no añades horarios, la cuenta estará disponible 24/7
-
-### Disclaimer
-
-Añade un texto opcional que se mostrará en el modal (por ejemplo, información sobre protección de datos).
-
-## Estructura del plugin
-
-```
-Whatsapp/
-├── whatsapp-flotante.php          # Archivo principal
-├── includes/
-│   ├── class-whatsapp-flotante.php    # Clase principal
-│   ├── class-whatsapp-settings.php    # Gestión de opciones
-│   ├── class-whatsapp-admin.php       # Panel de administración
-│   └── class-whatsapp-frontend.php    # Visualización frontend
-├── admin/
-│   ├── templates/
-│   │   ├── settings-page.php          # Página de configuración
-│   │   ├── account-row.php            # Template de cuenta
-│   │   └── schedule-row.php           # Template de horario
-│   ├── css/
-│   │   └── admin-style.css            # Estilos del admin
-│   └── js/
-│       └── admin-script.js            # JavaScript del admin
-├── public/
-│   ├── templates/
-│   │   ├── floating-button.php        # Botón flotante
-│   │   └── modal.php                  # Modal de cuentas
-│   ├── css/
-│   │   └── frontend-style.css         # Estilos del frontend
-│   └── js/
-│       └── frontend-script.js         # JavaScript del frontend
-├── assets/
-│   └── images/
-│       └── whatsapp-icon.svg          # Icono por defecto
-└── languages/
-    └── whatsapp-flotante.pot          # Template de traducción
+add_filter( 'whatsapp_flotante_available_accounts', function ( $available ) {
+    return $available;
+} );
 ```
 
-## Arquitectura
+### JavaScript event
 
-El plugin utiliza una arquitectura orientada a objetos con separación de responsabilidades:
+Published in both modes, whether it opens or closes. Check the global first: if
+your code runs after the event fired, you would miss it.
 
-- **WhatsApp_Flotante**: Clase principal que orquesta todos los componentes
-- **WhatsApp_Settings**: Gestiona opciones, validación y sanitización de datos
-- **WhatsApp_Admin**: Maneja el panel de administración y assets del admin
-- **WhatsApp_Frontend**: Renderiza el botón flotante y gestiona la visualización
+```js
+function whenKnown( cb ) {
+    if ( window.whatsappFlotanteEstado ) {
+        cb( window.whatsappFlotanteEstado );
+        return;
+    }
+    document.addEventListener( 'whatsappFlotante:estado', function ( e ) {
+        cb( e.detail );
+    }, { once: true } );
+}
 
-## Validaciones
+// detail: { abierto: boolean, cuentas: number, modo: "cliente"|"servidor" }
+```
 
-El plugin incluye validaciones robustas:
-
-- Formato de hora HH:MM válido
-- Hora de inicio menor que hora de fin
-- Días en rango 0-6 (0=Domingo)
-- Teléfono y etiqueta obligatorios
-- Validación de attachment ID de imagen
-- Migración automática de formatos antiguos
-
-## Zona horaria
-
-El plugin utiliza la zona horaria configurada en WordPress (Ajustes > Generales) para validar si una cuenta debe mostrarse según sus horarios.
-
-## Requisitos
-
-- WordPress 5.0 o superior
-- PHP 7.2 o superior
-
-## Soporte
-
-Para reportar bugs o solicitar nuevas funcionalidades, contacta con el desarrollador.
-
-## Licencia
-
-GPL v2 o posterior
+Note that in server mode the state is calculated when the page is generated, so
+a cached page will report a stale value. Turn on the browser-side option for the
+event to be reliable behind a page cache.
 
 ## Changelog
 
+### 1.0.6
+* Fixed: the plugin did not start up. The main class had lost its constructor
+  and the method that loads and instantiates the other classes, so neither the
+  settings page nor the floating button appeared. It raised no PHP error, it
+  simply did nothing.
+* Fixed the text domain, which pointed to `whatsapp-flotante` instead of
+  `sf-chat-flotante`, preventing translations from loading.
+* Renamed `languages/whatsapp-flotante.pot` to `sf-chat-flotante.pot`.
+* Restored the release workflow and normalized CSS/JS line endings.
+
+### 1.0.5
+* Updated to meet WordPress Coding Standards.
+* Security enhancements, improved sanitization and proper escaping.
+* Resolved formatting and naming convention warnings.
+
+### 1.0.4
+* Addressed text domain mismatches in Admin classes.
+* Added missing sanitization to admin forms.
+
 ### 1.0.0
-- Versión inicial
-- Múltiples cuentas de WhatsApp
-- Sistema de horarios avanzado
-- Icono personalizable
-- Panel de administración moderno
-- Diseño responsive
+* Initial release.
+* Multiple contact accounts with advanced schedules.
+* Customizable icon and responsive design.

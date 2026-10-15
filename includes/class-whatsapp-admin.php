@@ -50,7 +50,7 @@ class WhatsApp_Admin
     public function track_click()
     {
         // Verificar nonce - wp_verify_nonce handles sanitization internally
-        if (!isset($_POST['nonce']) || !wp_verify_nonce(wp_unslash($_POST['nonce']), 'whatsapp_flotante_nonce')) {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'whatsapp_flotante_nonce')) {
             wp_send_json_error('Invalid nonce');
         }
 
@@ -95,8 +95,8 @@ class WhatsApp_Admin
     public function add_admin_menu()
     {
         add_options_page(
-            __('WhatsApp Flotante', 'whatsapp-flotante'),
-            __('WhatsApp Flotante', 'whatsapp-flotante'),
+            esc_html__('WhatsApp Flotante', 'sf-whatsapp-chat-wordpress'),
+            esc_html__('WhatsApp Flotante', 'sf-whatsapp-chat-wordpress'),
             'manage_options',
             'whatsapp-flotante',
             array($this, 'render_settings_page')
@@ -108,30 +108,32 @@ class WhatsApp_Admin
      */
     public function register_settings()
     {
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ACCOUNTS);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_CUSTOM_ICON);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_DISCLAIMER);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ICON_POSITION);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT);
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ACCOUNTS, array('sanitize_callback' => array($this->settings, 'sanitize_accounts')));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_CUSTOM_ICON, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_DISCLAIMER, array('sanitize_callback' => 'wp_kses_post'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_HOLIDAYS, array('sanitize_callback' => array($this->settings, 'sanitize_holidays')));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_CLIENT_SIDE, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_ICON_POSITION, array('sanitize_callback' => 'sanitize_text_field'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT, array('sanitize_callback' => 'sanitize_text_field'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT, array('sanitize_callback' => 'sanitize_text_field'));
 
         // Responsive Tablet
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_TABLET);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_TABLET);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT_TABLET);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT_TABLET);
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_TABLET, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_TABLET, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT_TABLET, array('sanitize_callback' => 'sanitize_text_field'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT_TABLET, array('sanitize_callback' => 'sanitize_text_field'));
 
         // Responsive Mobile
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_MOBILE);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_MOBILE);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT_MOBILE);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT_MOBILE);
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_MOBILE, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_MOBILE, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_BOTTOM_UNIT_MOBILE, array('sanitize_callback' => 'sanitize_text_field'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_MARGIN_SIDE_UNIT_MOBILE, array('sanitize_callback' => 'sanitize_text_field'));
 
         // Breakpoints
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_BREAKPOINT_TABLET);
-        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_BREAKPOINT_MOBILE);
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_BREAKPOINT_TABLET, array('sanitize_callback' => 'absint'));
+        register_setting('whatsapp_flotante_group', WhatsApp_Settings::OPTION_BREAKPOINT_MOBILE, array('sanitize_callback' => 'absint'));
     }
 
     /**
@@ -171,18 +173,18 @@ class WhatsApp_Admin
             'whatsapp-flotante-admin',
             'whatsappFlotanteAdmin',
             array(
-                'confirmDelete' => __('¿Estás seguro de que quieres eliminar esta cuenta?', 'whatsapp-flotante'),
-                'confirmDeleteSchedule' => __('¿Estás seguro de que quieres eliminar este horario?', 'whatsapp-flotante'),
-                'mediaTitle' => __('Seleccionar icono de WhatsApp', 'whatsapp-flotante'),
-                'mediaButton' => __('Usar esta imagen', 'whatsapp-flotante'),
+                'confirmDelete' => esc_html__('¿Estás seguro de que quieres eliminar esta cuenta?', 'sf-whatsapp-chat-wordpress'),
+                'confirmDeleteSchedule' => esc_html__('¿Estás seguro de que quieres eliminar este horario?', 'sf-whatsapp-chat-wordpress'),
+                'mediaTitle' => esc_html__('Seleccionar icono de WhatsApp', 'sf-whatsapp-chat-wordpress'),
+                'mediaButton' => esc_html__('Usar esta imagen', 'sf-whatsapp-chat-wordpress'),
                 'days' => array(
-                    __('D', 'whatsapp-flotante'),
-                    __('L', 'whatsapp-flotante'),
-                    __('M', 'whatsapp-flotante'),
-                    __('X', 'whatsapp-flotante'),
-                    __('J', 'whatsapp-flotante'),
-                    __('V', 'whatsapp-flotante'),
-                    __('S', 'whatsapp-flotante'),
+                    esc_html__('D', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('L', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('M', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('X', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('J', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('V', 'sf-whatsapp-chat-wordpress'),
+                    esc_html__('S', 'sf-whatsapp-chat-wordpress'),
                 ),
             )
         );
@@ -195,7 +197,7 @@ class WhatsApp_Admin
     {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'whatsapp-flotante'));
+            wp_die(esc_html__('No tienes permisos para acceder a esta página.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Obtener datos actuales
@@ -203,6 +205,10 @@ class WhatsApp_Admin
         $custom_icon_id = $this->settings->get_custom_icon();
         $custom_icon_url = $custom_icon_id ? wp_get_attachment_image_url($custom_icon_id, 'thumbnail') : '';
         $disclaimer = $this->settings->get_disclaimer();
+        $holidays = $this->settings->get_holidays_setting();
+        $client_side = $this->settings->is_client_side();
+        $modal_title = $this->settings->get_modal_title();
+        $modal_subtitle = $this->settings->get_modal_subtitle();
         $icon_position = $this->settings->get_icon_position();
         $margin_bottom = $this->settings->get_margin_bottom();
         $margin_side = $this->settings->get_margin_side();
@@ -236,18 +242,19 @@ class WhatsApp_Admin
     {
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'whatsapp-flotante'));
+            wp_die(esc_html__('No tienes permisos para realizar esta acción.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Verificar nonce - wp_verify_nonce handles sanitization internally
         if (
             !isset($_POST['whatsapp_flotante_nonce']) ||
-            !wp_verify_nonce(wp_unslash($_POST['whatsapp_flotante_nonce']), 'whatsapp_flotante_save')
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['whatsapp_flotante_nonce'])), 'whatsapp_flotante_save')
         ) {
-            wp_die(__('Error de seguridad. Por favor, intenta de nuevo.', 'whatsapp-flotante'));
+            wp_die(esc_html__('Error de seguridad. Por favor, intenta de nuevo.', 'sf-whatsapp-chat-wordpress'));
         }
 
         // Guardar cuentas
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $accounts = isset($_POST['accounts']) ? wp_unslash($_POST['accounts']) : array();
         $this->settings->save_accounts($accounts);
 
@@ -256,8 +263,24 @@ class WhatsApp_Admin
         $this->settings->save_custom_icon($custom_icon);
 
         // Guardar disclaimer
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $disclaimer = isset($_POST['disclaimer']) ? wp_unslash($_POST['disclaimer']) : '';
         $this->settings->save_disclaimer($disclaimer);
+
+        // Guardar dias de cierre
+        $holidays = isset($_POST['holidays']) ? wp_unslash($_POST['holidays']) : '';
+        $this->settings->save_holidays($holidays);
+
+        // Guardar modo de decision del horario
+        $this->settings->save_client_side(!empty($_POST['client_side']));
+
+        // Guardar título del modal
+        $modal_title = isset($_POST['modal_title']) ? sanitize_text_field(wp_unslash($_POST['modal_title'])) : '';
+        $this->settings->save_modal_title($modal_title);
+
+        // Guardar subtítulo del modal
+        $modal_subtitle = isset($_POST['modal_subtitle']) ? sanitize_text_field(wp_unslash($_POST['modal_subtitle'])) : '';
+        $this->settings->save_modal_subtitle($modal_subtitle);
 
         // Guardar posición del icono
         $icon_position = isset($_POST['icon_position']) ? sanitize_text_field(wp_unslash($_POST['icon_position'])) : 'bottom-right';
@@ -331,7 +354,7 @@ class WhatsApp_Admin
             $redirect_args['breakpoint_adjusted'] = 'true';
         }
         
-        wp_redirect(add_query_arg(
+        wp_safe_redirect(add_query_arg(
             $redirect_args,
             admin_url('options-general.php')
         ));

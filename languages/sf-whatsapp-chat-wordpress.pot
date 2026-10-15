@@ -1,10 +1,10 @@
-# Translation Template for WhatsApp Flotante
-# Copyright (C) 2024
-# This file is distributed under the same license as the WhatsApp Flotante plugin.
+# Translation Template for SF Chat Flotante
+# Copyright (C) 2026
+# This file is distributed under the same license as the SF Chat Flotante plugin.
 
 msgid ""
 msgstr ""
-"Project-Id-Version: WhatsApp Flotante 1.0.0\n"
+"Project-Id-Version: SF Chat Flotante 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-06 07:00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: whatsapp-flotante.php
+#: sf-whatsapp-chat-wordpress.php
 msgid "Este plugin requiere WordPress 5.0 o superior."
 msgstr ""
 
