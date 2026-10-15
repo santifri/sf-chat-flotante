@@ -241,14 +241,19 @@ class WhatsApp_Updater
 
         $datos = json_decode(wp_remote_retrieve_body($respuesta), true);
 
-        if (empty($datos['tag_name'])) {
+        // Del tag solo vale la primera secuencia de numeros separados por puntos.
+        // Una errata al publicar llegaria tal cual a version_compare(): con texto
+        // delante ("version 1.2.0") la da por anterior a la instalada y la
+        // actualizacion no se ofreceria nunca; con basura detras ("v1.2.0,") se
+        // ofrece, pero el escritorio muestra la version con la errata.
+        if (empty($datos['tag_name']) || !preg_match('/\d+(?:\.\d+)*/', $datos['tag_name'], $version)) {
             set_transient(self::TRANSIENT, 'error', HOUR_IN_SECONDS);
 
             return false;
         }
 
         $release = array(
-            'version' => ltrim($datos['tag_name'], 'v'),
+            'version' => $version[0],
             'url'     => isset($datos['html_url']) ? $datos['html_url'] : '',
             'notas'   => isset($datos['body']) ? $datos['body'] : '',
             'paquete' => $this->paquete($datos),

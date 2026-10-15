@@ -1,5 +1,15 @@
 # Changelog
 
+## [Sin publicar]
+
+### Correcciones
+
+- Las actualizaciones automáticas toman del tag del release solo el número de
+  versión. Antes solo se quitaba la `v` inicial, así que un tag con una errata
+  (`version 1.2.0`) hacía que la actualización no se ofreciera nunca, y uno con
+  basura detrás (`v1.2.0,`) se mostraba tal cual en el escritorio. Un tag sin
+  ningún número se trata como un fallo de la consulta.
+
 ## [1.1.0] - 2026-09-28
 
 ### Modo compatible con caché
